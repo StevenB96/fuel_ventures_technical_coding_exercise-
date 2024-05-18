@@ -79,3 +79,8 @@ There is no requirement to write any tests as part of this task. Included are so
 Please zip up this folder and respond via email.
 
 *Make sure you don't include any python virtual environments or any large and unnecessary folders.*
+
+
+## Helpful code snippets
+./venv/Scripts/activate.ps1
+python ./src/run.py

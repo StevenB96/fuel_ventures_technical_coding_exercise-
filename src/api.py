@@ -1,10 +1,13 @@
-from flask import Blueprint, request
-
+from flask import Blueprint, request, jsonify
 import core
 from schema import SnomedCodeSchema
 
 
 api = Blueprint('api', __name__, url_prefix='/api')
+
+@api.route('/')
+def index():
+    return jsonify({"message": "Hello World."})
 
 @api.after_request
 def make_json_output(response):
@@ -18,10 +21,22 @@ def get_snomed_code(description_id: str):
     """
     Returns the SNOMED code with a matching description_id
     """
-    # Example function returning a snomed_code (dict) from a description_id. Replace this with you own function.
-    snomed_code = core.get_snomed_code_dummy(description_id)
-    # Example using a marshamllow schema to serialise snomed_code to json string
-    return SnomedCodeSchema().dumps(snomed_code)
+
+    try:
+        snomed_code = SnomedCodeSchema()
+        snomed_code_records = snomed_code.search_snomed_code_records(
+            {
+                'description_id': int(description_id),
+            },
+            0
+        )
+        return f"Results: {snomed_code_records}"
+    except Exception as e:
+        return f"Error: {e}"
+    # # Example function returning a snomed_code (dict) from a description_id. Replace this with you own function.
+    # snomed_code = core.get_snomed_code_dummy(description_id)
+    # # Example using a marshamllow schema to serialise snomed_code to json string
+    # return SnomedCodeSchema().dumps(snomed_code)
 
 
 @api.route("/snomed_code", methods=['POST'])
@@ -51,6 +66,18 @@ def search_snomed_code():
         SNOMED codes description for it to be considered a match.
     search_string - the search string
     """
-    # TODO 1. Read in query parameters form request
-    # TODO 2. Search logic
-    # TODO 3. Return SNOMED codes
+
+    try:
+        search_string_q_param = request.args.get('search_string', '')
+        n_q_param = int(request.args.get('n', 0))
+        snomed_code = SnomedCodeSchema()
+        snomed_code_records = snomed_code.search_snomed_code_records(
+            {
+                'description': search_string_q_param.split(','),
+            },
+            n_q_param,
+        )
+
+        return f"Results: {snomed_code_records}"
+    except Exception as e:
+        return f"Error: {e}"
