@@ -23,20 +23,19 @@ def get_snomed_code(description_id: str):
     """
 
     try:
-        snomed_code = SnomedCodeSchema()
-        snomed_code_records = snomed_code.search_snomed_code_records(
+        snomed_code_records = core.search_snomed_code_records(
             {
-                'description_id': int(description_id),
+                'description_id': [int(description_id)],
             },
-            0
+            1
         )
-        return f"Results: {snomed_code_records}"
+
+        if (snomed_code_records and len(snomed_code_records) == 1):
+            return snomed_code_records[0]
+
+        return []
     except Exception as e:
         return f"Error: {e}"
-    # # Example function returning a snomed_code (dict) from a description_id. Replace this with you own function.
-    # snomed_code = core.get_snomed_code_dummy(description_id)
-    # # Example using a marshamllow schema to serialise snomed_code to json string
-    # return SnomedCodeSchema().dumps(snomed_code)
 
 
 @api.route("/snomed_code", methods=['POST'])
@@ -49,10 +48,12 @@ def add_snomed_code():
     description_id: string
     description: string
     """
-    # Example of getting the requests json data and deserialising using a marshamllow schema.
+
     snomed_code = SnomedCodeSchema().load(request.get_json())
-    # TODO 1: Add snomed code to snomed_codes.json
-    return snomed_code
+
+    created = core.post_snomed_code(snomed_code)
+
+    return 'Created SnomedCode!' if created == True else 'Failed to create SnomedCode.'
 
 
 @api.route("/snomed_code/search", methods=['GET'])
@@ -70,14 +71,14 @@ def search_snomed_code():
     try:
         search_string_q_param = request.args.get('search_string', '')
         n_q_param = int(request.args.get('n', 0))
-        snomed_code = SnomedCodeSchema()
-        snomed_code_records = snomed_code.search_snomed_code_records(
+
+        snomed_code_records = core.search_snomed_code_records(
             {
                 'description': search_string_q_param.split(','),
             },
             n_q_param,
         )
 
-        return f"Results: {snomed_code_records}"
+        return snomed_code_records
     except Exception as e:
         return f"Error: {e}"
