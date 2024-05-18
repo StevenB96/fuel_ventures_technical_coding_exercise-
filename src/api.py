@@ -90,6 +90,9 @@ def search_snomed_code():
         search_string_q_param = search_input_data.get("search_string", "")
         n_q_param = search_input_data.get("n", 0)
 
+        if (n_q_param > len(search_string_q_param.split(","))):
+            return jsonify({"error": "N cannot be be larger than the number of required search terms."}), 400
+
         snomed_code_records = core.search_snomed_code_records(
             {
                 "description": search_string_q_param.split(","),
