@@ -66,7 +66,7 @@ def add_snomed_code():
         if created:
             return jsonify({"message": "Created SnomedCode!"}), 200
         else:
-            return jsonify({"error": "Failed to create SnomedCode."}), 500
+            return jsonify({"error": "Failed to create SnomedCode. Hint: check description_id is unique."}), 500
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
