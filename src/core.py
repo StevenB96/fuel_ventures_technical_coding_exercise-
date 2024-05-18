@@ -99,7 +99,8 @@ def post_snomed_code(snomed_code):
                 "description": snomed_code["description"],
             }
             core.save_json_file(snomed_code_list)
-            return True
+
+            return SnomedCodeSchema().dumps(snomed_code)
 
         return False
     except Exception as e:

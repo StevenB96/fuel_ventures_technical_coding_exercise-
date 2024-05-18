@@ -1,6 +1,7 @@
 import pytest
 from app import create_app
 import json
+import random
 
 @pytest.fixture
 def client():
@@ -13,6 +14,8 @@ def test_get_snomed_code(client):
     id = '822101011'
     response = client.get(f'/api/snomed_code/{id}')
     assert response.status_code == 200
+    data = json.loads(response.get_json())
+    assert isinstance(data, (dict))
 
     ## Test incorrect character failure.
     id = 'ABC'
@@ -22,6 +25,21 @@ def test_get_snomed_code(client):
     assert data['error'] == 'Description ID must be a number.'
 
 def test_add_snomed_code(client):
+    ## Test successful addition.
+    random_number = random.randint(0, 999999)
+    formatted_number = str(random_number).zfill(6)
+    # Define the request body
+    data = {
+        'concept_id': '123',
+        'description_id': formatted_number,
+        'description': 'Example Description'
+    }
+    # Make a POST request with the request body
+    response = client.post('/api/snomed_code', json=data)
+    assert response.status_code == 200
+    data = json.loads(response.get_json())
+    assert isinstance(data, (dict))
+
     ## Test incorrect character failure.
     # Define the request body
     data = {

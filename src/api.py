@@ -64,10 +64,10 @@ def add_snomed_code():
         if not snomed_code["concept_id"].isdigit():
             return jsonify({"error": "Concept ID must be a number."}), 400
 
-        created = core.post_snomed_code(snomed_code)
+        snomed_code = core.post_snomed_code(snomed_code)
 
-        if created:
-            return jsonify({"message": "Created SnomedCode!"}), 200
+        if snomed_code:
+            return jsonify(snomed_code), 200
         else:
             return jsonify({"error": "Failed to create SnomedCode. Hint: check description_id is unique."}), 500
 
