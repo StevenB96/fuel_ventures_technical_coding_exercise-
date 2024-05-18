@@ -33,11 +33,12 @@ def get_snomed_code(description_id: str):
         )
 
         if snomed_code_records and len(snomed_code_records) == 1:
-            return snomed_code_records[0]
+            return jsonify(snomed_code_records[0]), 200
 
-        return []
+        return jsonify([]), 404
+    
     except Exception as e:
-        return f"Error: {e}"
+        return jsonify({"error": str(e)}), 500
 
 
 @api.route("/snomed_code", methods=["POST"])
@@ -51,17 +52,24 @@ def add_snomed_code():
     description: string
     """
 
-    snomed_code = SnomedCodeSchema().load(request.get_json())
+    try:
+        snomed_code = SnomedCodeSchema().load(request.get_json())
 
-    if False == snomed_code["description_id"].isdigit():
-        return "Error: Description ID must be a number."
-    
-    if False == snomed_code["concept_id"].isdigit():
-        return "Error: Concept ID must be a number."
+        if not snomed_code["description_id"].isdigit():
+            return jsonify({"error": "Description ID must be a number."}), 400
+        
+        if not snomed_code["concept_id"].isdigit():
+            return jsonify({"error": "Concept ID must be a number."}), 400
 
-    created = core.post_snomed_code(snomed_code)
+        created = core.post_snomed_code(snomed_code)
 
-    return "Created SnomedCode!" if created == True else "Failed to create SnomedCode."
+        if created:
+            return jsonify({"message": "Created SnomedCode!"}), 200
+        else:
+            return jsonify({"error": "Failed to create SnomedCode."}), 500
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @api.route("/snomed_code/search", methods=["GET"])
@@ -77,10 +85,8 @@ def search_snomed_code():
     """
 
     try:
-        # Validate and deserialize the incoming request args
         search_input_data = SearchInputSchema().load(request.args)
 
-        # Access the validated data
         search_string_q_param = search_input_data.get("search_string", "")
         n_q_param = search_input_data.get("n", 0)
 
@@ -91,6 +97,7 @@ def search_snomed_code():
             n_q_param,
         )
 
-        return snomed_code_records
+        return jsonify(snomed_code_records), 200
+
     except Exception as e:
-        return f"Error: {e}"
+        return jsonify({"error": str(e)}), 500

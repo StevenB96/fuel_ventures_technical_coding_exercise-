@@ -125,3 +125,5 @@ cython_debug/
 
 # VS Code
 .vscode/
+
+snomed_codes.json
