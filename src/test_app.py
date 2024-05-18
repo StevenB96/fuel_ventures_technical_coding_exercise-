@@ -62,7 +62,7 @@ def test_add_snomed_code(client):
 
 def test_search_snomed_code(client):
     ##Test valid search.
-    search_string = 'a,e'
+    search_string = 'Clinical,Heart'
     n = 2
     response = client.get(f'/api/snomed_code/search?search_string={search_string}&n={n}')
     assert response.status_code == 200
@@ -70,7 +70,7 @@ def test_search_snomed_code(client):
     assert isinstance(data, (list))
 
     ##Test invalid N.
-    search_string = 'a,e'
+    search_string = 'Clinical,Heart'
     n = 3
     response = client.get(f'/api/snomed_code/search?search_string={search_string}&n={n}')
     assert response.status_code == 400
