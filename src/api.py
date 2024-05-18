@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 import core
-from schema import SnomedCodeSchema
+from schema import SnomedCodeSchema, SearchInputSchema
 
 
 api = Blueprint('api', __name__, url_prefix='/api')
@@ -69,8 +69,12 @@ def search_snomed_code():
     """
 
     try:
-        search_string_q_param = request.args.get('search_string', '')
-        n_q_param = int(request.args.get('n', 0))
+        # Validate and deserialize the incoming request args
+        search_input_data = SearchInputSchema().load(request.args)
+
+        # Access the validated data
+        search_string_q_param = search_input_data.get('search_string', '')
+        n_q_param = search_input_data.get('n', 0)
 
         snomed_code_records = core.search_snomed_code_records(
             {
