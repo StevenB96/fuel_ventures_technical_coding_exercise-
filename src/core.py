@@ -95,7 +95,7 @@ def post_snomed_code(snomed_code):
 
         if str(snomed_code["description_id"]) not in snomed_code_id_list:
             snomed_code_list[snomed_code["description_id"]] = {
-                "concept_id": snomed_code["concept_id"],
+                "concept_id": int(snomed_code["concept_id"]),
                 "description": snomed_code["description"],
             }
             core.save_json_file(snomed_code_list)
