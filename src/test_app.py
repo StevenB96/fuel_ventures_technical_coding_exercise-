@@ -14,6 +14,13 @@ def test_get_snomed_code(client):
     response = client.get(f'/api/snomed_code/{id}')
     assert response.status_code == 200
 
+    ## Test incorrect character failure.
+    id = 'ABC'
+    response = client.get(f'/api/snomed_code/{id}')
+    assert response.status_code == 400
+    data = json.loads(response.data)
+    assert data['error'] == 'Description ID must be a number.'
+
 def test_add_snomed_code(client):
     ## Test incorrect character failure.
     # Define the request body

@@ -25,6 +25,9 @@ def get_snomed_code(description_id: str):
     """
 
     try:
+        if not description_id.isdigit():
+            return jsonify({"error": "Description ID must be a number."}), 400
+
         snomed_code_records = core.search_snomed_code_records(
             {
                 "description_id": [str(description_id)],
