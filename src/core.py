@@ -72,7 +72,7 @@ def search_snomed_code_records(attribute_search_dict: dict[str, list], n: int):
         ):
             # Add Description Id attribute.
             snomed_code_record_copy = dict(snomed_record_value)
-            snomed_code_record_copy["description_id"] = int(snomed_record_key)
+            snomed_code_record_copy["description_id"] = str(snomed_record_key)
 
             if (
                 find_record_match(snomed_code_record_copy, attribute_search_dict, n)
@@ -90,10 +90,10 @@ def post_snomed_code(snomed_code):
     try:
         snomed_code_list = core.load_json_file()
         snomed_code_id_list = [
-            int(key) for _, (key, _) in enumerate(snomed_code_list.items())
+            str(key) for _, (key, _) in enumerate(snomed_code_list.items())
         ]
 
-        if int(snomed_code["description_id"]) not in snomed_code_id_list:
+        if str(snomed_code["description_id"]) not in snomed_code_id_list:
             snomed_code_list[snomed_code["description_id"]] = {
                 "concept_id": snomed_code["concept_id"],
                 "description": snomed_code["description"],

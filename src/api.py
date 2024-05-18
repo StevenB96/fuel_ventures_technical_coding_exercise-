@@ -25,7 +25,7 @@ def get_snomed_code(description_id: str):
     try:
         snomed_code_records = core.search_snomed_code_records(
             {
-                'description_id': [int(description_id)],
+                'description_id': [str(description_id)],
             },
             1
         )
