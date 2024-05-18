@@ -38,7 +38,7 @@ def get_snomed_code(description_id: str):
         if snomed_code_records and len(snomed_code_records) == 1:
             return jsonify(snomed_code_records[0]), 200
 
-        return jsonify([]), 404
+        return jsonify({"error": "SNOMED code not found."}), 404
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500

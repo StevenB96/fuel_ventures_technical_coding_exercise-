@@ -24,10 +24,17 @@ def test_get_snomed_code(client):
     data = json.loads(response.data)
     assert data['error'] == 'Description ID must be a number.'
 
+    ## Test SNOMED code not found.
+    id = 1
+    response = client.get(f'/api/snomed_code/{id}')
+    assert response.status_code == 404
+    data = json.loads(response.data)
+    assert data['error'] == "SNOMED code not found."
+
 def test_add_snomed_code(client):
     ## Test successful addition.
     random_number = random.randint(0, 999999)
-    formatted_number = str(random_number).zfill(6)
+    formatted_number = str(random_number)
     # Define the request body
     data = {
         'concept_id': '123',

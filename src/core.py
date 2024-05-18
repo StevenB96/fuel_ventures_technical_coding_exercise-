@@ -36,7 +36,8 @@ def find_record_match(snomed_code_record, attribute_search_dict, n):
                 if isinstance(record_attribute_value, (str)) and isinstance(
                     record_attribute_value, (str)
                 ):
-                    match_count = record_attribute_value.count(attribute_search_value)
+                    split_record_attribute_value = record_attribute_value.split(" ")
+                    match_count = split_record_attribute_value.count(attribute_search_value)
                     if match_count > 0:
                         if n == None:
                             return True
